@@ -10,3 +10,4 @@ const userSchema = mongoose.Schema({ // 스키마 정의
 
 const User = mongoose.model('User', userSchema) // 스키마로부터 생성된 모델 객체
 module.exports = User;
+ //하이!!
