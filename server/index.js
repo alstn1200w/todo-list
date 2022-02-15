@@ -7,6 +7,8 @@ var routes = require('./src/routes')
 var app = express()
 var port = 5000
 
+app.set('case sensitive routing', true)
+
 var corsOptions = { // CORS 옵션
     origin: 'http://localhost:5000',
     credentials: true

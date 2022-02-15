@@ -3,13 +3,18 @@ const req = require('express/lib/request')
 const TodoRouter = express.Router() //하위 url 에 대한 요청을 처리하기 위하여
 const Todo = require("../../models/Todo") // 정의한 모델 가져오기 
 
-TodoRouter.route('/').get( (req, res) => {
-    res.send('all todo list') //함수 리턴이랑 동일
+TodoRouter.route('/').get( async (req, res) => {
+    // 데이터베이스에서 전체 할일 목록 조회
+    const todos = await Todo.find()
+    res.json({ status: 200, todos}) // 함수 리턴이랑 동일함
 })
 
 // /api/todos/{id}
 TodoRouter.route('/:id').get( (req, res) => {
-    res.send(`todo ${req.params.id}`)
+    Todo.findById(req.params.id, (err, todo) => {
+        if(err) throw err;
+        res.json({ status: 200, todo})
+    })
 })
 
 // /api/todos
@@ -35,8 +40,10 @@ TodoRouter.route('/').post( (req, res) => {
 // /api/todos/{id}
 TodoRouter.route('/:id').put( (req, res) => {
     // 데이터베이스에서 파라미터로 전달된 id 값으로 해당 할일 도큐먼트를 찾음
-    // 찾은 도큐먼트 업데이트
-    res.send(`todo ${req.params.id} updated`)
+    Todo.findByIdAndUpdate(req.params.id, req.body, {new: true}, (err, todo) => {
+        if(err) throw err;
+        res.json({ status: 204, msg: `todo ${req.params.id} updated in db !`, todo})
+    })
 })
 
 TodoRouter.route('/:id').delete( (req, res) => {
